@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 import tkinter as tk
 from tkinter import messagebox
 import random
@@ -62,18 +60,14 @@ class Gomoku:
 
     def getBoard(self):
         return self.board
-
-
 class GomokuGUI:
     def __init__(self, root, game, player):
         self.root = root
         self.game = game
-        self.player = player
+        self.player = player()
         self.canvas_size = 600
         self.square_size = self.canvas_size // self.game.size
-        self.canvas = tk.Canvas(
-            self.root, width=self.canvas_size, height=self.canvas_size
-        )
+        self.canvas = tk.Canvas(self.root, width=self.canvas_size, height=self.canvas_size)
         self.canvas.pack()
         self.canvas.bind("<Button-1>", self.on_click)
         self.draw_board()
@@ -102,17 +96,15 @@ class GomokuGUI:
                     winner = self.game.current_player
                     tk.messagebox.showinfo("Game Over", f"Player {winner} wins!")
                 else:
-                    x, y = self.player.nextMove(self,self.game.getBoard())
+                    x, y = self.player.nextMove(self.game.getBoard())
                     if self.game.make_move(x, y):
                         self.draw_piece(x, y)
                         if self.game.game_over:
                             winner = self.game.current_player
-                            tk.messagebox.showinfo(
-                                "Game Over", f"Player {winner} wins!"
-                            )
+                            tk.messagebox.showinfo("Game Over", f"Player {winner} wins!")
 
     def draw_piece(self, x, y):
-        color = "black" if self.game.current_player == "X" else "white"
+        color = "black" if self.game.current_player == "O" else "white"
         center_x = (x + 0.5) * self.square_size
         center_y = (y + 0.5) * self.square_size
         radius = self.square_size // 3
@@ -123,8 +115,6 @@ class GomokuGUI:
             center_y + radius,
             fill=color,
         )
-
-
 class DummyPlayer:
     def ratePoint(self, x, y, board):
         directions = [(1, 0), (0, 1), (1, 1), (1, -1)]
@@ -149,22 +139,19 @@ class DummyPlayer:
         for i in range(15):
             for j in range(15):
                 if board[i][j] == ".":
-                    ratingBoard[i][j] = self.ratePoint(self,i, j, board)
+                    ratingBoard[i][j] = self.ratePoint(i, j, board)
         return ratingBoard
 
     def nextMove(self, board):
-
         max_rating = -1
         best_move = None
+        rating_board = self.rateBoard(board)
         for i in range(15):
             for j in range(15):
-                if board[i][j] == ".":
-                    if self.rateBoard(board)[i][j] >= max_rating:
-                        max_rating = self.rateBoard(board)[i][j]
-                        best_move = (i, j)
+                if board[i][j] == "." and rating_board[i][j] > max_rating:
+                    max_rating = rating_board[i][j]
+                    best_move = (i, j)
         return best_move
-
-
 if __name__ == "__main__":
     root = tk.Tk()
     root.title("Gomoku")
