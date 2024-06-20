@@ -123,13 +123,26 @@ class DummyPlayer:
             for i in range(1, 5):
                 nx, ny = x + i * dx, y + i * dy
                 if 0 <= nx < 15 and 0 <= ny < 15 and board[nx][ny] == "X":
-                    rate += 1 / i
+                    rate += 0.75 / i
                 else:
                     break
             for i in range(1, 5):
                 nx, ny = x - i * dx, y - i * dy
                 if 0 <= nx < 15 and 0 <= ny < 15 and board[nx][ny] == "X":
-                    rate += 1 / i
+                    rate += 0.75 / i
+                else:
+                    break
+        for dx, dy in directions:
+            for i in range(1, 5):
+                nx, ny = x + i * dx, y + i * dy
+                if 0 <= nx < 15 and 0 <= ny < 15 and board[nx][ny] == "O":
+                    rate += 4 / i
+                else:
+                    break
+            for i in range(1, 5):
+                nx, ny = x - i * dx, y - i * dy
+                if 0 <= nx < 15 and 0 <= ny < 15 and board[nx][ny] == "O":
+                    rate += 4 / i
                 else:
                     break
         return rate
